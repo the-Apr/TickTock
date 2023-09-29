@@ -1,114 +1,97 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br />
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener"
-        >vue-cli documentation</a
-      >.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel"
-          target="_blank"
-          rel="noopener"
-          >babel</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint"
-          target="_blank"
-          rel="noopener"
-          >eslint</a
-        >
-      </li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li>
-        <a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a>
-      </li>
-      <li>
-        <a href="https://forum.vuejs.org" target="_blank" rel="noopener"
-          >Forum</a
-        >
-      </li>
-      <li>
-        <a href="https://chat.vuejs.org" target="_blank" rel="noopener"
-          >Community Chat</a
-        >
-      </li>
-      <li>
-        <a href="https://twitter.com/vuejs" target="_blank" rel="noopener"
-          >Twitter</a
-        >
-      </li>
-      <li>
-        <a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a>
-      </li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li>
-        <a href="https://router.vuejs.org" target="_blank" rel="noopener"
-          >vue-router</a
-        >
-      </li>
-      <li>
-        <a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a>
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-devtools#vue-devtools"
-          target="_blank"
-          rel="noopener"
-          >vue-devtools</a
-        >
-      </li>
-      <li>
-        <a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener"
-          >vue-loader</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/awesome-vue"
-          target="_blank"
-          rel="noopener"
-          >awesome-vue</a
-        >
-      </li>
-    </ul>
-  </div>
+  <main class="app py-8 px-11 flex flex-col space-y-4">
+
+    <section class="greeting">
+      <h2 class="title">
+        What's up, <input 
+        type="text" 
+        placeholder="Name here" 
+        v-model="name" 
+        class="bg-transparent outline-none">
+      </h2>
+    </section>
+
+    <section class="create-todo">
+      <h3 class="mb-4">CREATE A TODO</h3>
+
+      <form @submit.prevent = "addTodo" class="flex flex-col space-y-6">
+        <h4>What's on your todo list?</h4>
+        <input 
+        type="text" 
+        placeholder="e.g attend to my email" v-model="input_content" 
+        class="p-4  outline-none">
+
+        <h4>Pick a category</h4>
+
+        <div class="options flex flex-row space-x-8 justify-center">
+          <label for="">
+            <input 
+            type="radio" 
+            name="category" 
+            value="business"
+            v-model="input_category"
+            class="">
+            <span class="bubble business"></span>
+            <div>Business</div>
+          </label>
+
+          <label for="">
+            <input 
+            type="radio" 
+            name="category" 
+            value="personal"
+            v-model="input_category">
+            <span class="bubble personal"></span>
+            <div>Business</div>
+          </label>
+        </div>
+      </form>
+    </section>
+  </main>
 </template>
 
 <script>
+import { ref, onMounted, computed, watch } from 'vue'
+
 export default {
-  name: "HelloWorld",
-  props: {
-    msg: String,
-  },
+  setup() {
+    const todos = ref([])
+    const name = ref('')
+
+    const input_content = ref('')
+    const input_category = ref(null)
+
+    const todos_asc = computed(() => todos.value.sort((a,b) => {
+      return b.createdAt - a.createdAt
+    }))
+
+    watch(name, (newVal) => {
+      localStorage.setItem('name', newVal)
+    })
+
+    onMounted(() => {
+      name.value = localStorage.getItem('name') || ''
+    })
+
+    return {name}
+  }
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  /* margin-top: 60px; */
+
+  background-color: #d1d4d8;
+  min-height: 100vh;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+
+.app{
+  
 }
 </style>
